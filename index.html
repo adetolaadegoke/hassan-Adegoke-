@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="TOLV — Built Different. Streetwear for people who move with purpose." />
+    <title>TOLV — Built Different</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;0,900;1,800&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="announcement">FREE US SHIPPING ON ORDERS OVER $100 <span>•</span> DROP 01 IS LIVE</div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="TOLV home"><span class="crown">♛</span>TOLV</a>
+      <nav aria-label="Main navigation">
+        <a href="#shop">Shop</a>
+        <a href="#story">The Brand</a>
+        <a href="#details">Details</a>
+      </nav>
+      <button class="cart-button" type="button" aria-label="Open shopping bag" id="cartButton">
+        <span>Bag</span><b id="cartCount">0</b>
+      </button>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">EST. 2024 / DROP 01</p>
+          <h1>BUILT<br /><em>DIFFERENT.</em></h1>
+          <p class="hero-text">Purpose on your sleeve. TOLV is everyday uniform for the ones making their own lane.</p>
+          <a class="primary-link" href="#shop">SHOP THE DROP <span>↘</span></a>
+        </div>
+        <div class="hero-image-wrap">
+          <img src="tolv-collection.jpeg" alt="TOLV graphic tee collection in five colorways" />
+          <span class="vertical-stamp">TOLV / 001</span>
+        </div>
+      </section>
+
+      <section class="ticker" aria-label="Brand values">
+        <span>MOVE WITH PURPOSE</span><i>✦</i><span>MORE THAN JUST CLOTHES</span><i>✦</i><span>MAKE YOUR LANE</span><i>✦</i><span>BUILT DIFFERENT</span>
+      </section>
+
+      <section class="shop-section" id="shop">
+        <div class="section-heading">
+          <p class="eyebrow">01 / THE FIRST DROP</p>
+          <h2>THE ESSENTIAL<br />GRAPHIC TEE</h2>
+          <p>Heavyweight cotton. Oversized fit. Five directions, one mindset.</p>
+        </div>
+        <div class="product-stage">
+          <div class="product-art">
+            <img id="productImage" src="tolv-collection.jpeg" alt="TOLV tee collection" />
+            <span class="product-tag">LIMITED<br />DROP</span>
+          </div>
+          <div class="product-info">
+            <div class="product-title-row"><h3>TOLV / <span id="colorName">BLACK</span></h3><strong>$48</strong></div>
+            <p class="product-description" id="productDescription">The original. A deep black canvas with a high-contrast statement graphic.</p>
+            <div class="option-group">
+              <span>COLOR — <b id="colorLabel">BLACK</b></span>
+              <div class="swatches" role="radiogroup" aria-label="Choose a color">
+                <button class="swatch cream" data-color="Cream" data-desc="Warm cream cotton with an all-over ambition graphic." aria-label="Cream" aria-checked="false" role="radio"></button>
+                <button class="swatch black active" data-color="Black" data-desc="The original. A deep black canvas with a high-contrast statement graphic." aria-label="Black" aria-checked="true" role="radio"></button>
+                <button class="swatch olive" data-color="Olive Green" data-desc="Muted olive with a mountain-sized reminder to keep climbing." aria-label="Olive green" aria-checked="false" role="radio"></button>
+                <button class="swatch blue" data-color="Royal Blue" data-desc="Electric royal blue for global minds and different places." aria-label="Royal blue" aria-checked="false" role="radio"></button>
+                <button class="swatch pink" data-color="Pink" data-desc="Soft pink, hard message. Same vision, bigger moves." aria-label="Pink" aria-checked="false" role="radio"></button>
+              </div>
+            </div>
+            <div class="option-group">
+              <span>SIZE</span>
+              <div class="sizes" role="radiogroup" aria-label="Choose a size">
+                <button class="size active" role="radio" aria-checked="true">S</button><button class="size" role="radio" aria-checked="false">M</button><button class="size" role="radio" aria-checked="false">L</button><button class="size" role="radio" aria-checked="false">XL</button><button class="size" role="radio" aria-checked="false">2XL</button>
+              </div>
+            </div>
+            <button class="add-button" type="button" id="addButton">ADD TO BAG <span>+</span></button>
+            <p class="microcopy">UNISEX OVERSIZED FIT · 100% COTTON · PRE-SHRUNK</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="story-section" id="story">
+        <div class="story-mark">♛</div>
+        <p class="eyebrow">THE TOLV MINDSET</p>
+        <blockquote>“YOUR GOALS DESERVE<br />MORE THAN JUST <em>EXCUSES.</em>”</blockquote>
+        <p class="story-copy">TOLV is for the late starters, the early risers, and everybody in between who refuses to settle for the ordinary. Wear the reminder. Do the work.</p>
+      </section>
+
+      <section class="details-section" id="details">
+        <p class="eyebrow">MADE TO LIVE IN</p>
+        <div class="details-grid">
+          <article><span>01</span><h3>HEAVYWEIGHT</h3><p>Premium, structured cotton that keeps its shape through every repeat wear.</p></article>
+          <article><span>02</span><h3>OVERSIZED</h3><p>Relaxed shoulders and an easy drape designed for everyday movement.</p></article>
+          <article><span>03</span><h3>ORIGINAL ART</h3><p>Every graphic is a visual nudge to keep building your version of more.</p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-brand"><span class="crown">♛</span> TOLV</div>
+      <p>BUILT DIFFERENT. EST. 2024.</p>
+      <a href="mailto:hello@tolv.store">hello@tolv.store</a>
+    </footer>
+
+    <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+      <div class="drawer-head"><h2>YOUR BAG</h2><button type="button" id="closeCart" aria-label="Close bag">×</button></div>
+      <div class="cart-empty" id="cartEmpty">YOUR BAG IS WAITING.</div>
+      <div class="cart-item" id="cartItem" hidden><div><b>ESSENTIAL GRAPHIC TEE</b><p id="cartDetail">BLACK / M</p></div><strong>$48</strong></div>
+      <button class="checkout-button" id="checkoutButton" type="button" disabled>CHECKOUT <span>↗</span></button>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
