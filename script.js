@@ -51,4 +51,6 @@ addButton.addEventListener('click', () => {
 cartButton.addEventListener('click', () => toggleCart(true));
 closeCart.addEventListener('click', () => toggleCart(false));
 scrim.addEventListener('click', () => toggleCart(false));
-checkoutButton.addEventListener('click', () => { checkoutButton.textContent = 'COMING SOON'; });
+checkoutButton.addEventListener('click', () => {
+  window.location.href = 'https://paystack.shop/pay/4xhfrd2266';
+});
