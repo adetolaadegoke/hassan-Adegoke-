@@ -255,10 +255,9 @@ if (checkoutButton) {
     if (cartItems.length === 0) return;
 
     /*
-      Current Paystack payment link is preserved.
-      The bag price is calculated automatically by this website.
+      TOLV PAYSTACK PAYMENT LINK
     */
-    window.location.href = 'https://paystack.shop/pay/4xhfnd2266';
+    window.location.href = 'https://paystack.shop/pay/4xhfrd2266';
   });
 }
 
