@@ -1,71 +1,73 @@
-// ===============================
-// TOLV STORE - PRODUCT + BAG SCRIPT
-// ===============================
-
 document.addEventListener("DOMContentLoaded", function () {
 
-  // -------------------------------
+  // ==============================
   // PRODUCT ELEMENTS
-  // -------------------------------
+  // ==============================
 
   const productImage = document.getElementById("productImage");
   const productPrice = document.getElementById("productPrice");
-  const productDescription = document.getElementById("productDescription");
+  const productDescription =
+    document.getElementById("productDescription");
   const colorName = document.getElementById("colorName");
 
-  const capImage = document.getElementById("capImage");
   const capPrice = document.getElementById("capPrice");
   const capColorName = document.getElementById("capColorName");
 
   const addButton = document.getElementById("addButton");
   const addCapButton = document.getElementById("addCapButton");
 
-  // -------------------------------
+  // ==============================
   // BAG ELEMENTS
-  // -------------------------------
+  // ==============================
 
   const bagCount = document.querySelector(".bag-count");
   const bagItems = document.querySelector(".bag-items");
   const bagTotal = document.querySelector(".bag-total");
-  const checkoutButton = document.querySelector(".checkout-button");
+  const checkoutButton =
+    document.querySelector(".checkout-button");
 
-  // -------------------------------
-  // PAYSTACK PAYMENT LINK
-  // -------------------------------
+  // ==============================
+  // SHIRT DATA
+  // ==============================
 
-  const PAYSTACK_PAYMENT_LINK =
-    "https://paystack.shop/pay/4xhfrd2266";
+  const shirtData = {
+    S: {
+      name: "Small",
+      price: 20000,
+      image: "tolv small.png",
+      description:
+        "The original TOLV graphic tee in Small."
+    },
 
-  // -------------------------------
-  // PRODUCT DATA
-  // -------------------------------
+    M: {
+      name: "Medium",
+      price: 22000,
+      image: "tolv medium.png",
+      description:
+        "The original TOLV graphic tee in Medium."
+    },
 
-  const shirtPrices = {
-    S: 20000,
-    M: 22000,
-    L: 23000
+    L: {
+      name: "Large",
+      price: 23000,
+      image: "tolv big.png",
+      description:
+        "The original TOLV graphic tee in Large."
+    }
   };
 
-  const shirtImages = {
-    S: "tolv small.png",
-    M: "tolv medium.png",
-    L: "tolv big.png"
-  };
+  // ==============================
+  // CAP DATA
+  // ==============================
 
-  const shirtDescriptions = {
-    S: "The original TOLV graphic tee in Small.",
-    M: "The original TOLV graphic tee in Medium.",
-    L: "The original TOLV graphic tee in Large."
-  };
-
-  const capPrices = {
+  const capData = {
     Printed: 10000,
     Monogrammed: 11000
   };
 
-  // -------------------------------
-  // CURRENT SELECTIONS
-  // -------------------------------
+  // ==============================
+  // CURRENT SELECTION
+  // ==============================
 
   let selectedSize = "S";
   let selectedColor = "BLACK";
@@ -73,43 +75,40 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedCapDesign = "Printed";
   let selectedCapColor = "BLACK";
 
-  // -------------------------------
+  // ==============================
   // BAG
-  // -------------------------------
+  // ==============================
 
   let cartItems = [];
 
-  // -------------------------------
-  // FORMAT MONEY
-  // -------------------------------
+  // ==============================
+  // MONEY FORMAT
+  // ==============================
 
   function formatNaira(amount) {
     return "₦" + Number(amount).toLocaleString("en-NG");
   }
 
-  // -------------------------------
+  // ==============================
   // UPDATE SHIRT
-  // -------------------------------
+  // ==============================
 
   function updateShirt() {
 
-    if (productImage) {
-      productImage.src = shirtImages[selectedSize];
+    const product = shirtData[selectedSize];
 
-      productImage.onerror = function () {
-        console.log("Could not load:", shirtImages[selectedSize]);
-      };
+    if (productImage) {
+      productImage.src = product.image;
     }
 
     if (productPrice) {
-      productPrice.textContent = formatNaira(
-        shirtPrices[selectedSize]
-      );
+      productPrice.textContent =
+        formatNaira(product.price);
     }
 
     if (productDescription) {
       productDescription.textContent =
-        shirtDescriptions[selectedSize];
+        product.description;
     }
 
     if (colorName) {
@@ -117,60 +116,64 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // -------------------------------
+  // ==============================
   // SIZE BUTTONS
-  // -------------------------------
+  // ==============================
 
-  const sizeButtons = document.querySelectorAll(
-    ".sizes .size:not(.cap-design)"
-  );
+  const sizeButtons =
+    document.querySelectorAll(
+      ".sizes .size:not(.cap-design)"
+    );
 
   sizeButtons.forEach(function (button) {
 
     button.addEventListener("click", function () {
 
-      sizeButtons.forEach(function (btn) {
-        btn.classList.remove("active");
+      sizeButtons.forEach(function (item) {
+        item.classList.remove("active");
       });
 
       button.classList.add("active");
 
-      selectedSize = button.dataset.size;
+      selectedSize =
+        button.getAttribute("data-size");
 
       updateShirt();
     });
 
   });
 
-  // -------------------------------
-  // SHIRT COLOR BUTTONS
-  // -------------------------------
+  // ==============================
+  // SHIRT COLORS
+  // ==============================
 
-  const colorButtons = document.querySelectorAll(
-    ".swatch:not(.cap-color)"
-  );
+  const colorButtons =
+    document.querySelectorAll(
+      ".swatch:not(.cap-color)"
+    );
 
   colorButtons.forEach(function (button) {
 
     button.addEventListener("click", function () {
 
-      colorButtons.forEach(function (btn) {
-        btn.classList.remove("active");
+      colorButtons.forEach(function (item) {
+        item.classList.remove("active");
       });
 
       button.classList.add("active");
 
       selectedColor =
-        button.dataset.color.toUpperCase();
+        button.getAttribute("data-color")
+          .toUpperCase();
 
       updateShirt();
     });
 
   });
 
-  // -------------------------------
+  // ==============================
   // CAP DESIGN
-  // -------------------------------
+  // ==============================
 
   const capDesignButtons =
     document.querySelectorAll(".cap-design");
@@ -179,28 +182,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     button.addEventListener("click", function () {
 
-      capDesignButtons.forEach(function (btn) {
-        btn.classList.remove("active");
+      capDesignButtons.forEach(function (item) {
+        item.classList.remove("active");
       });
 
       button.classList.add("active");
 
       selectedCapDesign =
-        button.dataset.design;
+        button.getAttribute("data-design");
 
       if (capPrice) {
-        capPrice.textContent = formatNaira(
-          capPrices[selectedCapDesign]
-        );
+        capPrice.textContent =
+          formatNaira(
+            capData[selectedCapDesign]
+          );
       }
-
     });
 
   });
 
-  // -------------------------------
+  // ==============================
   // CAP COLORS
-  // -------------------------------
+  // ==============================
 
   const capColorButtons =
     document.querySelectorAll(".cap-color");
@@ -209,69 +212,76 @@ document.addEventListener("DOMContentLoaded", function () {
 
     button.addEventListener("click", function () {
 
-      capColorButtons.forEach(function (btn) {
-        btn.classList.remove("active");
+      capColorButtons.forEach(function (item) {
+        item.classList.remove("active");
       });
 
       button.classList.add("active");
 
       selectedCapColor =
-        button.dataset.color.toUpperCase();
+        button.getAttribute("data-color")
+          .toUpperCase();
 
       if (capColorName) {
         capColorName.textContent =
           selectedCapColor;
       }
-
     });
 
   });
 
-  // -------------------------------
+  // ==============================
   // ADD SHIRT TO BAG
-  // -------------------------------
+  // ==============================
 
   if (addButton) {
 
     addButton.addEventListener("click", function () {
 
+      const product = shirtData[selectedSize];
+
       cartItems.push({
+        type: "shirt",
         name: "TOLV GRAPHIC TEE",
         size: selectedSize,
         color: selectedColor,
-        price: shirtPrices[selectedSize]
+        price: product.price
       });
 
       updateBag();
 
-      addButton.textContent = "ADDED ✓";
+      addButton.innerHTML =
+        "ADDED ✓";
 
       setTimeout(function () {
-        addButton.innerHTML = 'ADD TO BAG <span>+</span>';
+        addButton.innerHTML =
+          'ADD TO BAG <span>+</span>';
       }, 1200);
 
     });
 
   }
 
-  // -------------------------------
+  // ==============================
   // ADD CAP TO BAG
-  // -------------------------------
+  // ==============================
 
   if (addCapButton) {
 
     addCapButton.addEventListener("click", function () {
 
       cartItems.push({
+        type: "cap",
         name: "TOLV CAP",
         design: selectedCapDesign,
         color: selectedCapColor,
-        price: capPrices[selectedCapDesign]
+        price: capData[selectedCapDesign]
       });
 
       updateBag();
 
-      addCapButton.textContent = "ADDED ✓";
+      addCapButton.innerHTML =
+        "ADDED ✓";
 
       setTimeout(function () {
         addCapButton.innerHTML =
@@ -282,26 +292,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
   }
 
-  // -------------------------------
-  // CART TOTAL
-  // -------------------------------
+  // ==============================
+  // GET TOTAL
+  // ==============================
 
   function getCartTotal() {
 
-    return cartItems.reduce(function (total, item) {
-      return total + item.price;
-    }, 0);
-
+    return cartItems.reduce(
+      function (total, item) {
+        return total + item.price;
+      },
+      0
+    );
   }
 
-  // -------------------------------
+  // ==============================
   // UPDATE BAG
-  // -------------------------------
+  // ==============================
 
   function updateBag() {
 
     if (bagCount) {
-      bagCount.textContent = cartItems.length;
+      bagCount.textContent =
+        cartItems.length;
     }
 
     if (!bagItems) {
@@ -327,16 +340,21 @@ document.addEventListener("DOMContentLoaded", function () {
       const itemElement =
         document.createElement("div");
 
-      itemElement.className = "bag-item";
+      itemElement.className =
+        "bag-item";
 
       let details = "";
 
-      if (item.size) {
+      if (item.type === "shirt") {
         details =
-          item.color + " / " + item.size;
+          item.color +
+          " / " +
+          item.size;
       } else {
         details =
-          item.color + " / " + item.design;
+          item.color +
+          " / " +
+          item.design;
       }
 
       itemElement.innerHTML = `
@@ -346,8 +364,12 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
 
         <div>
-          <strong>${formatNaira(item.price)}</strong>
-          <button type="button"
+          <strong>
+            ${formatNaira(item.price)}
+          </strong>
+
+          <button
+            type="button"
             class="remove-item"
             data-index="${index}">
             ×
@@ -356,7 +378,6 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
 
       bagItems.appendChild(itemElement);
-
     });
 
     if (bagTotal) {
@@ -364,37 +385,44 @@ document.addEventListener("DOMContentLoaded", function () {
         formatNaira(getCartTotal());
     }
 
-    // REMOVE ITEMS
+    // Remove buttons
 
     const removeButtons =
-      document.querySelectorAll(".remove-item");
+      document.querySelectorAll(
+        ".remove-item"
+      );
 
     removeButtons.forEach(function (button) {
 
-      button.addEventListener("click", function () {
+      button.addEventListener(
+        "click",
+        function () {
 
-        const index =
-          Number(button.dataset.index);
+          const index =
+            Number(
+              button.getAttribute(
+                "data-index"
+              )
+            );
 
-        cartItems.splice(index, 1);
+          cartItems.splice(index, 1);
 
-        updateBag();
-
-      });
+          updateBag();
+        }
+      );
 
     });
-
   }
 
-  // -------------------------------
+  // ==============================
   // CHECKOUT
-  // -------------------------------
+  // ==============================
 
   if (checkoutButton) {
 
     checkoutButton.addEventListener(
       "click",
-      function (event) {
+      async function (event) {
 
         event.preventDefault();
 
@@ -403,25 +431,74 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
-        const total = getCartTotal();
+        const email =
+          prompt(
+            "Enter your email address for payment:"
+          );
+
+        if (!email) {
+          return;
+        }
 
         checkoutButton.textContent =
-          "CHECKOUT · " +
-          formatNaira(total) +
-          " ↗";
+          "PROCESSING...";
 
-        // Open the working Paystack payment page
-        window.location.href =
-          PAYSTACK_PAYMENT_LINK;
+        try {
+
+          const response =
+            await fetch(
+              "/api/pay",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+                  email: email,
+                  items: cartItems
+                })
+              }
+            );
+
+          const data =
+            await response.json();
+
+          if (
+            !response.ok ||
+            !data.authorization_url
+          ) {
+            throw new Error(
+              data.error ||
+              "Payment could not be started."
+            );
+          }
+
+          window.location.href =
+            data.authorization_url;
+
+        } catch (error) {
+
+          console.error(error);
+
+          alert(
+            "Payment could not be started. Please try again."
+          );
+
+          checkoutButton.textContent =
+            "CHECKOUT ↗";
+        }
 
       }
     );
 
   }
 
-  // -------------------------------
-  // INITIAL STATE
-  // -------------------------------
+  // ==============================
+  // START WEBSITE
+  // ==============================
 
   updateShirt();
   updateBag();
