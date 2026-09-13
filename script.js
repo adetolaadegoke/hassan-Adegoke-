@@ -1,18 +1,13 @@
 /* =========================================
    TOLV STORE
-   PRODUCT + BAG + PAYSTACK CHECKOUT
+   PRODUCT + BAG + CHECKOUT
 ========================================= */
 
-
-/* =========================================
-   PAYSTACK PAYMENT LINK
-========================================= */
 const PAYSTACK_PAYMENT_LINK =
   "https://paystack.shop/pay/4xhfrd2266";
 
-/* =========================================
-   ELEMENTS
-========================================= */
+
+/* PRODUCTS */
 
 const productImage =
   document.getElementById("productImage");
@@ -26,6 +21,9 @@ const productDescription =
 const colorName =
   document.getElementById("colorName");
 
+
+/* CAP */
+
 const capImage =
   document.getElementById("capImage");
 
@@ -35,21 +33,23 @@ const capPrice =
 const capColorName =
   document.getElementById("capColorName");
 
+
+/* OPTIONS */
+
 const swatches =
-  document.querySelectorAll(
-    ".swatch:not(.cap-color)"
-  );
+  document.querySelectorAll(".swatch:not(.cap-color)");
 
 const capColors =
   document.querySelectorAll(".cap-color");
 
 const sizes =
-  document.querySelectorAll(
-    ".size:not(.cap-design)"
-  );
+  document.querySelectorAll(".size:not(.cap-design)");
 
 const capDesigns =
   document.querySelectorAll(".cap-design");
+
+
+/* BUTTONS */
 
 const addButton =
   document.getElementById("addButton");
@@ -86,7 +86,7 @@ const checkoutButton =
 
 
 /* =========================================
-   PRODUCT STATE
+   SELECTED SHIRT
 ========================================= */
 
 let selectedColor = "black";
@@ -100,7 +100,7 @@ let selectedProductImage =
 
 
 /* =========================================
-   CAP STATE
+   SELECTED CAP
 ========================================= */
 
 let selectedCapColor = "black";
@@ -118,25 +118,27 @@ let cartItems = [];
 
 
 /* =========================================
-   FORMAT NAIRA
+   FORMAT PRICE
 ========================================= */
 
 function formatNaira(amount) {
 
-  return `₦${Number(amount).toLocaleString("en-NG")}`;
+  return "₦" +
+    Number(amount).toLocaleString("en-NG");
 
 }
 
 
 /* =========================================
-   CALCULATE TOTAL
+   TOTAL
 ========================================= */
 
 function getCartTotal() {
 
   return cartItems.reduce(
-    (total, item) =>
-      total + Number(item.price),
+    function(total, item) {
+      return total + Number(item.price);
+    },
     0
   );
 
@@ -144,7 +146,7 @@ function getCartTotal() {
 
 
 /* =========================================
-   OPEN / CLOSE BAG
+   BAG OPEN / CLOSE
 ========================================= */
 
 function toggleCart(open) {
@@ -182,6 +184,7 @@ function updateCart() {
   const total =
     getCartTotal();
 
+
   if (cartCount) {
 
     cartCount.textContent =
@@ -202,9 +205,7 @@ function updateCart() {
     cartDetail.textContent = "";
 
     if (cartEmpty) {
-
       cartEmpty.hidden = false;
-
     }
 
     if (checkoutButton) {
@@ -221,22 +222,24 @@ function updateCart() {
 
 
   if (cartEmpty) {
-
     cartEmpty.hidden = true;
-
   }
 
 
-  const lastItem =
+  const item =
     cartItems[cartItems.length - 1];
 
 
   cartTitle.textContent =
-    lastItem.name;
+    item.name;
 
 
   cartDetail.textContent =
-    `${lastItem.color} / ${lastItem.option} · ${formatNaira(lastItem.price)}`;
+    item.color +
+    " / " +
+    item.option +
+    " · " +
+    formatNaira(item.price);
 
 
   if (checkoutButton) {
@@ -244,7 +247,9 @@ function updateCart() {
     checkoutButton.disabled = false;
 
     checkoutButton.textContent =
-      `CHECKOUT · ${formatNaira(total)} ↗`;
+      "CHECKOUT · " +
+      formatNaira(total) +
+      " ↗";
 
   }
 
@@ -252,136 +257,150 @@ function updateCart() {
 
 
 /* =========================================
-   SHIRT COLOR
+   SHIRT COLORS
 ========================================= */
 
-swatches.forEach((swatch) => {
+swatches.forEach(
+  function(swatch) {
 
-  swatch.addEventListener(
-    "click",
-    () => {
+    swatch.addEventListener(
+      "click",
+      function() {
 
-      swatches.forEach((item) => {
+        swatches.forEach(
+          function(item) {
 
-        item.classList.remove(
+            item.classList.remove(
+              "active"
+            );
+
+            item.setAttribute(
+              "aria-checked",
+              "false"
+            );
+
+          }
+        );
+
+
+        swatch.classList.add(
           "active"
         );
 
-        item.setAttribute(
+        swatch.setAttribute(
           "aria-checked",
-          "false"
+          "true"
         );
 
-      });
+
+        selectedColor =
+          swatch.dataset.color ||
+          "black";
 
 
-      swatch.classList.add(
-        "active"
-      );
+        if (colorName) {
 
-      swatch.setAttribute(
-        "aria-checked",
-        "true"
-      );
+          colorName.textContent =
+            selectedColor.toUpperCase();
+
+        }
 
 
-      selectedColor =
-        swatch.dataset.color ||
-        "black";
+        if (productDescription) {
 
+          productDescription.textContent =
+            "The original TOLV graphic tee in " +
+            selectedColor +
+            ". Choose your size.";
 
-      if (colorName) {
-
-        colorName.textContent =
-          selectedColor.toUpperCase();
-
-      }
-
-
-      if (productDescription) {
-
-        productDescription.textContent =
-          `The original TOLV graphic tee in ${selectedColor}. Choose your size.`;
+        }
 
       }
+    );
 
-    }
-  );
-
-});
+  }
+);
 
 
 /* =========================================
-   SHIRT SIZE
+   SHIRT SIZES
 ========================================= */
 
-sizes.forEach((size) => {
+sizes.forEach(
+  function(size) {
 
-  size.addEventListener(
-    "click",
-    () => {
+    size.addEventListener(
+      "click",
+      function() {
 
-      sizes.forEach((item) => {
+        sizes.forEach(
+          function(item) {
 
-        item.classList.remove(
+            item.classList.remove(
+              "active"
+            );
+
+            item.setAttribute(
+              "aria-checked",
+              "false"
+            );
+
+          }
+        );
+
+
+        size.classList.add(
           "active"
         );
 
-        item.setAttribute(
+        size.setAttribute(
           "aria-checked",
-          "false"
+          "true"
         );
 
-      });
+
+        /*
+          S = SMALL
+          M = MEDIUM
+          L = LARGE
+        */
+
+        selectedSize =
+          size.dataset.size;
 
 
-      size.classList.add(
-        "active"
-      );
-
-      size.setAttribute(
-        "aria-checked",
-        "true"
-      );
-
-
-      selectedSize =
-        size.dataset.size ||
-        "S";
-
-
-      selectedPrice =
-        Number(
-          size.dataset.price
-        ) || 20000;
-
-
-      selectedProductImage =
-        size.dataset.image ||
-        "tolv small.png";
-
-
-      if (productPrice) {
-
-        productPrice.textContent =
-          formatNaira(
-            selectedPrice
+        selectedPrice =
+          Number(
+            size.dataset.price
           );
 
+
+        selectedProductImage =
+          size.dataset.image;
+
+
+        if (productPrice) {
+
+          productPrice.textContent =
+            formatNaira(
+              selectedPrice
+            );
+
+        }
+
+
+        if (productImage) {
+
+          productImage.src =
+            selectedProductImage;
+
+        }
+
       }
+    );
 
-
-      if (productImage) {
-
-        productImage.src =
-          selectedProductImage;
-
-      }
-
-    }
-  );
-
-});
+  }
+);
 
 
 /* =========================================
@@ -392,7 +411,7 @@ if (addButton) {
 
   addButton.addEventListener(
     "click",
-    () => {
+    function() {
 
       cartItems.push({
 
@@ -425,287 +444,70 @@ if (addButton) {
 
 
 /* =========================================
-   CAP COLOR
+   CAP COLORS
 ========================================= */
 
-capColors.forEach((swatch) => {
+capColors.forEach(
+  function(swatch) {
 
-  swatch.addEventListener(
-    "click",
-    () => {
+    swatch.addEventListener(
+      "click",
+      function() {
 
-      capColors.forEach((item) => {
+        capColors.forEach(
+          function(item) {
 
-        item.classList.remove(
+            item.classList.remove(
+              "active"
+            );
+
+            item.setAttribute(
+              "aria-checked",
+              "false"
+            );
+
+          }
+        );
+
+
+        swatch.classList.add(
           "active"
         );
 
-        item.setAttribute(
+        swatch.setAttribute(
           "aria-checked",
-          "false"
+          "true"
         );
 
-      });
+
+        selectedCapColor =
+          swatch.dataset.color ||
+          "black";
 
 
-      swatch.classList.add(
-        "active"
-      );
+        if (capColorName) {
 
-      swatch.setAttribute(
-        "aria-checked",
-        "true"
-      );
+          capColorName.textContent =
+            selectedCapColor.toUpperCase();
 
-
-      selectedCapColor =
-        swatch.dataset.color ||
-        "black";
-
-
-      if (capColorName) {
-
-        capColorName.textContent =
-          selectedCapColor.toUpperCase();
+        }
 
       }
+    );
 
-    }
-  );
-
-});
+  }
+);
 
 
 /* =========================================
    CAP DESIGN
 ========================================= */
 
-capDesigns.forEach((design) => {
+capDesigns.forEach(
+  function(design) {
 
-  design.addEventListener(
-    "click",
-    () => {
+    design.addEventListener(
+      "click",
+      function() {
 
-      capDesigns.forEach((item) => {
-
-        item.classList.remove(
-          "active"
-        );
-
-        item.setAttribute(
-          "aria-checked",
-          "false"
-        );
-
-      });
-
-
-      design.classList.add(
-        "active"
-      );
-
-      design.setAttribute(
-        "aria-checked",
-        "true"
-      );
-
-
-      selectedCapDesign =
-        design.dataset.design ||
-        "Printed";
-
-
-      selectedCapPrice =
-        Number(
-          design.dataset.price
-        ) || 10000;
-
-
-      if (capPrice) {
-
-        capPrice.textContent =
-          formatNaira(
-            selectedCapPrice
-          );
-
-      }
-
-    }
-  );
-
-});
-
-
-/* =========================================
-   ADD CAP
-========================================= */
-
-if (addCapButton) {
-
-  addCapButton.addEventListener(
-    "click",
-    () => {
-
-      cartItems.push({
-
-        name:
-          "TOLV CAP",
-
-        color:
-          selectedCapColor.toUpperCase(),
-
-        option:
-          selectedCapDesign.toUpperCase(),
-
-        price:
-          selectedCapPrice,
-
-        image:
-          "tolv cap.png"
-
-      });
-
-
-      updateCart();
-
-      toggleCart(true);
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   CART BUTTON
-========================================= */
-
-if (cartButton) {
-
-  cartButton.addEventListener(
-    "click",
-    () => {
-
-      toggleCart(true);
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   CLOSE BAG
-========================================= */
-
-if (closeCart) {
-
-  closeCart.addEventListener(
-    "click",
-    () => {
-
-      toggleCart(false);
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   CLOSE WITH SCRIM
-========================================= */
-
-if (scrim) {
-
-  scrim.addEventListener(
-    "click",
-    () => {
-
-      toggleCart(false);
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   PAYSTACK CHECKOUT
-========================================= */
-
-if (checkoutButton) {
-
-  checkoutButton.addEventListener(
-    "click",
-    () => {
-
-      if (cartItems.length === 0) {
-
-        return;
-
-      }
-
-
-      const total =
-        getCartTotal();
-
-
-      /*
-        The website calculates
-        the customer's order total.
-      */
-
-      console.log(
-        "TOLV ORDER TOTAL:",
-        formatNaira(total)
-      );
-
-
-      /*
-        Open your existing
-        working Paystack payment link.
-      */
-
-      window.location.href =
-        PAYSTACK_PAYMENT_LINK;
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   INITIAL STATE
-========================================= */
-
-if (productPrice) {
-
-  productPrice.textContent =
-    formatNaira(
-      selectedPrice
-    );
-
-}
-
-
-if (capPrice) {
-
-  capPrice.textContent =
-    formatNaira(
-      selectedCapPrice
-    );
-
-}
-
-
-if (productImage) {
-
-  productImage.src =
-    selectedProductImage;
-
-}
-
-
-updateCart();
+        cap
