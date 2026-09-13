@@ -7,10 +7,8 @@
 /* =========================================
    PAYSTACK PAYMENT LINK
 ========================================= */
-
 const PAYSTACK_PAYMENT_LINK =
-  "https://paystack.shop/pay/4xhfnd2266";
-
+  "https://paystack.shop/pay/4xhfrd2266";
 
 /* =========================================
    ELEMENTS
