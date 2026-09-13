@@ -1,142 +1,282 @@
-<section class="shop-section" id="shop">
-  <div class="section-heading">
-    <p class="eyebrow">01 / THE FIRST DROP</p>
-    <h2>THE ESSENTIAL<br />GRAPHIC TEE</h2>
-    <p>Heavyweight cotton. Oversized fit. Three sizes, one mindset.</p>
-  </div>
+const swatches = document.querySelectorAll('.swatch');
+const sizes = document.querySelectorAll('.size:not(.cap-design)');
+const capColors = document.querySelectorAll('.cap-color');
+const capDesigns = document.querySelectorAll('.cap-design');
 
-  <!-- CLOTHING -->
-  <div class="product-stage">
+const colorName = document.getElementById('colorName');
+const productDescription = document.getElementById('productDescription');
+const productImage = document.getElementById('productImage');
+const productPrice = document.getElementById('productPrice');
 
-    <div class="product-art">
-      <img id="productImage" src="tolv small.png" alt="TOLV clothing" />
-      <span class="product-tag">LIMITED<br />DROP</span>
-    </div>
+const capColorName = document.getElementById('capColorName');
+const capImage = document.getElementById('capImage');
+const capPrice = document.getElementById('capPrice');
 
-    <div class="product-info">
-      <p class="product-title-row">
-        <span>TOLV</span>
-        <span id="productPrice">₦20,000</span>
-      </p>
+const cartButton = document.getElementById('cartButton');
+const closeCart = document.getElementById('closeCart');
+const cartDrawer = document.getElementById('cartDrawer');
+const scrim = document.getElementById('scrim');
 
-      <p class="product-description" id="productDescription">
-        The original TOLV graphic tee. Choose your color and size.
-      </p>
+const addButton = document.getElementById('addButton');
+const addCapButton = document.getElementById('addCapButton');
 
-      <div class="option-group">
-        <span>COLOR</span>
-        <b id="colorName">BLACK</b>
+const cartCount = document.getElementById('cartCount');
+const cartEmpty = document.getElementById('cartEmpty');
+const cartTitle = document.getElementById('cartTitle');
+const cartDetail = document.getElementById('cartDetail');
+const checkoutButton = document.getElementById('checkoutButton');
 
-        <div class="swatches">
-          <button class="swatch black active"
-            data-color="black"
-            aria-label="Black"></button>
+let selectedColor = 'Black';
+let selectedSize = 'S';
+let selectedPrice = 20000;
+let selectedProductImage = 'tolv small.png';
 
-          <button class="swatch cream"
-            data-color="cream"
-            aria-label="Cream"></button>
+let selectedCapColor = 'Black';
+let selectedCapDesign = 'Printed';
+let selectedCapPrice = 10000;
 
-          <button class="swatch olive"
-            data-color="olive"
-            aria-label="Olive"></button>
+let cartItems = [];
 
-          <button class="swatch blue"
-            data-color="royal blue"
-            aria-label="Royal Blue"></button>
+function formatNaira(amount) {
+  return `₦${amount.toLocaleString('en-NG')}`;
+}
 
-          <button class="swatch pink"
-            data-color="pink"
-            aria-label="Pink"></button>
-        </div>
-      </div>
+function toggleCart(open) {
+  if (!cartDrawer) return;
 
-      <div class="option-group">
-        <span>SIZE</span>
+  cartDrawer.classList.toggle('open', open);
 
-        <div class="sizes">
-          <button class="size active"
-            data-size="S"
-            data-price="20000"
-            data-image="tolv small.png">S</button>
+  if (scrim) {
+    scrim.classList.toggle('show', open);
+  }
 
-          <button class="size"
-            data-size="M"
-            data-price="22000"
-            data-image="tolv medium.png">M</button>
+  cartDrawer.setAttribute('aria-hidden', String(!open));
+}
 
-          <button class="size"
-            data-size="L"
-            data-price="23000"
-            data-image="tolv big.png">L</button>
-        </div>
-      </div>
+function updateCart() {
+  if (!cartCount || !cartTitle || !cartDetail) return;
 
-      <button class="add-button" type="button" id="addButton">
-        ADD TO BAG <span>+</span>
-      </button>
+  cartCount.textContent = cartItems.length;
 
-      <p class="microcopy">
-        UNISEX OVERSIZED FIT · 100% COTTON · PRE-SHRUNK
-      </p>
-    </div>
+  if (cartItems.length === 0) {
+    if (cartEmpty) cartEmpty.hidden = false;
+    cartTitle.textContent = '';
+    cartDetail.textContent = '';
 
-  </div>
+    if (checkoutButton) {
+      checkoutButton.disabled = true;
+    }
 
-  <!-- CAP -->
-  <div class="product-stage">
+    return;
+  }
 
-    <div class="product-art">
-      <img id="capImage" src="tolv cap.png" alt="TOLV cap" />
-      <span class="product-tag">TOLV<br />CAP</span>
-    </div>
+  if (cartEmpty) cartEmpty.hidden = true;
 
-    <div class="product-info">
-      <p class="product-title-row">
-        <span>TOLV CAP</span>
-        <span id="capPrice">₦10,000</span>
-      </p>
+  const item = cartItems[cartItems.length - 1];
 
-      <p class="product-description">
-        TOLV streetwear cap. Choose your color and design.
-      </p>
+  cartTitle.textContent = item.name;
+  cartDetail.textContent =
+    `${item.color} / ${item.option} · ${formatNaira(item.price)}`;
 
-      <div class="option-group">
-        <span>COLOR</span>
-        <b id="capColorName">BLACK</b>
+  if (checkoutButton) {
+    checkoutButton.disabled = false;
+  }
+}
 
-        <div class="swatches">
-          <button class="swatch black cap-color active"
-            data-color="black"
-            aria-label="Black"></button>
 
-          <button class="swatch cream cap-color"
-            data-color="cream"
-            aria-label="Cream"></button>
+/* =========================
+   CLOTHING COLORS
+========================= */
 
-          <button class="swatch blue cap-color"
-            data-color="navy blue"
-            aria-label="Navy Blue"></button>
-        </div>
-      </div>
+swatches.forEach((swatch) => {
+  if (swatch.classList.contains('cap-color')) return;
 
-      <div class="option-group">
-        <span>DESIGN</span>
+  swatch.addEventListener('click', () => {
+    swatches.forEach((item) => {
+      if (!item.classList.contains('cap-color')) {
+        item.classList.remove('active');
+        item.setAttribute('aria-checked', 'false');
+      }
+    });
 
-        <div class="sizes">
-          <button class="size cap-design active"
-            data-design="Printed"
-            data-price="10000">PRINTED</button>
+    swatch.classList.add('active');
+    swatch.setAttribute('aria-checked', 'true');
 
-          <button class="size cap-design"
-            data-design="Monogrammed"
-            data-price="11000">MONOGRAM</button>
-        </div>
-      </div>
+    selectedColor = swatch.dataset.color || 'Black';
 
-      <button class="add-button" type="button" id="addCapButton">
-        ADD CAP TO BAG <span>+</span>
-      </button>
-    </div>
+    colorName.textContent = selectedColor.toUpperCase();
 
-  </div>
-</section>
+    productDescription.textContent =
+      `The original TOLV graphic tee in ${selectedColor}. Choose your size.`;
+  });
+});
+
+
+/* =========================
+   CLOTHING SIZES
+========================= */
+
+sizes.forEach((size) => {
+  size.addEventListener('click', () => {
+    sizes.forEach((item) => {
+      item.classList.remove('active');
+      item.setAttribute('aria-checked', 'false');
+    });
+
+    size.classList.add('active');
+    size.setAttribute('aria-checked', 'true');
+
+    selectedSize = size.dataset.size;
+    selectedPrice = Number(size.dataset.price);
+    selectedProductImage = size.dataset.image;
+
+    productPrice.textContent = formatNaira(selectedPrice);
+    productImage.src = selectedProductImage;
+  });
+});
+
+
+/* =========================
+   ADD CLOTHING TO BAG
+========================= */
+
+if (addButton) {
+  addButton.addEventListener('click', () => {
+    cartItems.push({
+      name: 'TOLV ESSENTIAL GRAPHIC TEE',
+      color: selectedColor.toUpperCase(),
+      option: selectedSize,
+      price: selectedPrice,
+      image: selectedProductImage
+    });
+
+    updateCart();
+    toggleCart(true);
+  });
+}
+
+
+/* =========================
+   CAP COLORS
+========================= */
+
+capColors.forEach((swatch) => {
+  swatch.addEventListener('click', () => {
+    capColors.forEach((item) => {
+      item.classList.remove('active');
+      item.setAttribute('aria-checked', 'false');
+    });
+
+    swatch.classList.add('active');
+    swatch.setAttribute('aria-checked', 'true');
+
+    selectedCapColor = swatch.dataset.color || 'Black';
+
+    if (capColorName) {
+      capColorName.textContent = selectedCapColor.toUpperCase();
+    }
+  });
+});
+
+
+/* =========================
+   CAP DESIGN
+========================= */
+
+capDesigns.forEach((design) => {
+  design.addEventListener('click', () => {
+    capDesigns.forEach((item) => {
+      item.classList.remove('active');
+      item.setAttribute('aria-checked', 'false');
+    });
+
+    design.classList.add('active');
+    design.setAttribute('aria-checked', 'true');
+
+    selectedCapDesign = design.dataset.design;
+    selectedCapPrice = Number(design.dataset.price);
+
+    if (capPrice) {
+      capPrice.textContent = formatNaira(selectedCapPrice);
+    }
+  });
+});
+
+
+/* =========================
+   ADD CAP TO BAG
+========================= */
+
+if (addCapButton) {
+  addCapButton.addEventListener('click', () => {
+    cartItems.push({
+      name: 'TOLV CAP',
+      color: selectedCapColor.toUpperCase(),
+      option: selectedCapDesign.toUpperCase(),
+      price: selectedCapPrice,
+      image: 'tolv cap.png'
+    });
+
+    updateCart();
+    toggleCart(true);
+  });
+}
+
+
+/* =========================
+   CART BUTTONS
+========================= */
+
+if (cartButton) {
+  cartButton.addEventListener('click', () => {
+    toggleCart(true);
+  });
+}
+
+if (closeCart) {
+  closeCart.addEventListener('click', () => {
+    toggleCart(false);
+  });
+}
+
+if (scrim) {
+  scrim.addEventListener('click', () => {
+    toggleCart(false);
+  });
+}
+
+
+/* =========================
+   CHECKOUT
+========================= */
+
+if (checkoutButton) {
+  checkoutButton.addEventListener('click', () => {
+    if (cartItems.length === 0) return;
+
+    /*
+      Current Paystack payment link is preserved.
+      The bag price is calculated automatically by this website.
+    */
+    window.location.href = 'https://paystack.shop/pay/4xhfnd2266';
+  });
+}
+
+
+/* =========================
+   INITIAL STATE
+========================= */
+
+if (productPrice) {
+  productPrice.textContent = formatNaira(selectedPrice);
+}
+
+if (capPrice) {
+  capPrice.textContent = formatNaira(selectedCapPrice);
+}
+
+if (productImage) {
+  productImage.src = selectedProductImage;
+}
+
+updateCart();
