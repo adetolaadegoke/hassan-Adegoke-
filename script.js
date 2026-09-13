@@ -253,11 +253,6 @@ if (scrim) {
 if (checkoutButton) {
   checkoutButton.addEventListener('click', () => {
     if (cartItems.length === 0) return;
-
-    /*
-      Current Paystack payment link is preserved.
-      The bag price is calculated automatically by this website.
-    */
     window.location.href = 'https://paystack.shop/pay/4xhfnd2266';
   });
 }
