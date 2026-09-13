@@ -1,275 +1,194 @@
 document.addEventListener("DOMContentLoaded", function () {
-
-  // ==============================
-  // PRODUCT ELEMENTS
-  // ==============================
-
+  // Product elements
   const productImage = document.getElementById("productImage");
   const productPrice = document.getElementById("productPrice");
-  const productDescription =
-    document.getElementById("productDescription");
+  const productDescription = document.getElementById("productDescription");
   const colorName = document.getElementById("colorName");
 
+  const capImage = document.getElementById("capImage");
   const capPrice = document.getElementById("capPrice");
   const capColorName = document.getElementById("capColorName");
 
   const addButton = document.getElementById("addButton");
   const addCapButton = document.getElementById("addCapButton");
 
-  // ==============================
-  // BAG ELEMENTS
-  // ==============================
+  // Bag elements — these IDs match your HTML
+  const cartButton = document.getElementById("cartButton");
+  const cartCount = document.getElementById("cartCount");
+  const cartDrawer = document.getElementById("cartDrawer");
+  const closeCart = document.getElementById("closeCart");
+  const cartEmpty = document.getElementById("cartEmpty");
+  const cartItem = document.getElementById("cartItem");
+  const cartDetail = document.getElementById("cartDetail");
+  const checkoutButton = document.getElementById("checkoutButton");
+  const scrim = document.getElementById("scrim");
 
-  const bagCount = document.querySelector(".bag-count");
-  const bagItems = document.querySelector(".bag-items");
-  const bagTotal = document.querySelector(".bag-total");
-  const checkoutButton =
-    document.querySelector(".checkout-button");
-
-  // ==============================
-  // SHIRT DATA
-  // ==============================
-
+  // Shirt prices and images
   const shirtData = {
-    S: {
-      name: "Small",
-      price: 20000,
-      image: "tolv small.png",
-      description:
-        "The original TOLV graphic tee in Small."
-    },
-
-    M: {
-      name: "Medium",
-      price: 22000,
-      image: "tolv medium.png",
-      description:
-        "The original TOLV graphic tee in Medium."
-    },
-
-    L: {
-      name: "Large",
-      price: 23000,
-      image: "tolv big.png",
-      description:
-        "The original TOLV graphic tee in Large."
-    }
+    S: { price: 20000, image: "tolv small.png", description: "The original TOLV graphic tee in Small." },
+    M: { price: 22000, image: "tolv medium.png", description: "The original TOLV graphic tee in Medium." },
+    L: { price: 23000, image: "tolv big.png", description: "The original TOLV graphic tee in Large." }
   };
-
-  // ==============================
-  // CAP DATA
-  // ==============================
 
   const capData = {
     Printed: 10000,
     Monogrammed: 11000
   };
 
-  // ==============================
-  // CURRENT SELECTION
-  // ==============================
-
   let selectedSize = "S";
   let selectedColor = "BLACK";
-
   let selectedCapDesign = "Printed";
   let selectedCapColor = "BLACK";
-
-  // ==============================
-  // BAG
-  // ==============================
-
   let cartItems = [];
-
-  // ==============================
-  // MONEY FORMAT
-  // ==============================
 
   function formatNaira(amount) {
     return "₦" + Number(amount).toLocaleString("en-NG");
   }
 
-  // ==============================
-  // UPDATE SHIRT
-  // ==============================
-
   function updateShirt() {
-
     const product = shirtData[selectedSize];
 
-    if (productImage) {
-      productImage.src = product.image;
-    }
+    if (productImage) productImage.src = product.image;
+    if (productPrice) productPrice.textContent = formatNaira(product.price);
+    if (productDescription) productDescription.textContent = product.description;
+    if (colorName) colorName.textContent = selectedColor;
+  }
 
-    if (productPrice) {
-      productPrice.textContent =
-        formatNaira(product.price);
-    }
+  function updateCap() {
+    if (capPrice) capPrice.textContent = formatNaira(capData[selectedCapDesign]);
+    if (capColorName) capColorName.textContent = selectedCapColor;
 
-    if (productDescription) {
-      productDescription.textContent =
-        product.description;
-    }
-
-    if (colorName) {
-      colorName.textContent = selectedColor;
+    if (capImage) {
+      const capImages = {
+        BLACK: "tolv cap.png",
+        CREAM: "tolv cap cream.png",
+        "NAVY BLUE": "tolv cap blue.png"
+      };
+      capImage.src = capImages[selectedCapColor] || "tolv cap.png";
     }
   }
 
-  // ==============================
-  // SIZE BUTTONS
-  // ==============================
+  function setActive(buttons, selectedButton) {
+    buttons.forEach(function (button) {
+      button.classList.toggle("active", button === selectedButton);
+    });
+  }
 
-  const sizeButtons =
-    document.querySelectorAll(
-      ".sizes .size:not(.cap-design)"
-    );
-
+  // Shirt sizes
+  const sizeButtons = document.querySelectorAll(".sizes .size:not(.cap-design)");
   sizeButtons.forEach(function (button) {
-
     button.addEventListener("click", function () {
-
-      sizeButtons.forEach(function (item) {
-        item.classList.remove("active");
-      });
-
-      button.classList.add("active");
-
-      selectedSize =
-        button.getAttribute("data-size");
-
+      selectedSize = button.dataset.size;
+      setActive(sizeButtons, button);
       updateShirt();
     });
-
   });
 
-  // ==============================
-  // SHIRT COLORS
-  // ==============================
-
-  const colorButtons =
-    document.querySelectorAll(
-      ".swatch:not(.cap-color)"
-    );
-
-  colorButtons.forEach(function (button) {
-
+  // Shirt colors
+  const shirtColorButtons = document.querySelectorAll(".swatch:not(.cap-color)");
+  shirtColorButtons.forEach(function (button) {
     button.addEventListener("click", function () {
-
-      colorButtons.forEach(function (item) {
-        item.classList.remove("active");
-      });
-
-      button.classList.add("active");
-
-      selectedColor =
-        button.getAttribute("data-color")
-          .toUpperCase();
-
+      selectedColor = (button.dataset.color || "black").toUpperCase();
+      setActive(shirtColorButtons, button);
       updateShirt();
     });
-
   });
 
-  // ==============================
-  // CAP DESIGN
-  // ==============================
-
-  const capDesignButtons =
-    document.querySelectorAll(".cap-design");
-
+  // Cap designs
+  const capDesignButtons = document.querySelectorAll(".cap-design");
   capDesignButtons.forEach(function (button) {
-
     button.addEventListener("click", function () {
-
-      capDesignButtons.forEach(function (item) {
-        item.classList.remove("active");
-      });
-
-      button.classList.add("active");
-
-      selectedCapDesign =
-        button.getAttribute("data-design");
-
-      if (capPrice) {
-        capPrice.textContent =
-          formatNaira(
-            capData[selectedCapDesign]
-          );
-      }
+      selectedCapDesign = button.dataset.design;
+      setActive(capDesignButtons, button);
+      updateCap();
     });
-
   });
 
-  // ==============================
-  // CAP COLORS
-  // ==============================
-
-  const capColorButtons =
-    document.querySelectorAll(".cap-color");
-
+  // Cap colors
+  const capColorButtons = document.querySelectorAll(".cap-color");
   capColorButtons.forEach(function (button) {
-
     button.addEventListener("click", function () {
-
-      capColorButtons.forEach(function (item) {
-        item.classList.remove("active");
-      });
-
-      button.classList.add("active");
-
-      selectedCapColor =
-        button.getAttribute("data-color")
-          .toUpperCase();
-
-      if (capColorName) {
-        capColorName.textContent =
-          selectedCapColor;
-      }
+      selectedCapColor = (button.dataset.color || "black").toUpperCase();
+      setActive(capColorButtons, button);
+      updateCap();
     });
-
   });
 
-  // ==============================
-  // ADD SHIRT TO BAG
-  // ==============================
+  function openBag() {
+    if (cartDrawer) {
+      cartDrawer.classList.add("open");
+      cartDrawer.setAttribute("aria-hidden", "false");
+    }
+    if (scrim) scrim.classList.add("active");
+  }
 
+  function closeBag() {
+    if (cartDrawer) {
+      cartDrawer.classList.remove("open");
+      cartDrawer.setAttribute("aria-hidden", "true");
+    }
+    if (scrim) scrim.classList.remove("active");
+  }
+
+  if (cartButton) cartButton.addEventListener("click", openBag);
+  if (closeCart) closeCart.addEventListener("click", closeBag);
+  if (scrim) scrim.addEventListener("click", closeBag);
+
+  function getCartTotal() {
+    return cartItems.reduce(function (total, item) {
+      return total + item.price;
+    }, 0);
+  }
+
+  function updateBag() {
+    if (cartCount) cartCount.textContent = cartItems.length;
+
+    // Your current HTML has one placeholder cart row, not a cart list.
+    if (cartEmpty) cartEmpty.hidden = cartItems.length > 0;
+    if (cartItem) cartItem.hidden = cartItems.length === 0;
+
+    if (cartDetail) {
+      cartDetail.textContent = cartItems.map(function (item) {
+        return item.name + " — " +
+          (item.type === "shirt"
+            ? item.color + " / " + item.size
+            : item.color + " / " + item.design) +
+          " (" + formatNaira(item.price) + ")";
+      }).join(" | ");
+    }
+
+    if (cartItem) {
+      const priceElement = cartItem.querySelector("strong");
+      if (priceElement) priceElement.textContent = formatNaira(getCartTotal());
+    }
+
+    if (checkoutButton) checkoutButton.disabled = cartItems.length === 0;
+  }
+
+  // Add shirt
   if (addButton) {
-
     addButton.addEventListener("click", function () {
-
-      const product = shirtData[selectedSize];
-
       cartItems.push({
         type: "shirt",
         name: "TOLV GRAPHIC TEE",
         size: selectedSize,
         color: selectedColor,
-        price: product.price
+        price: shirtData[selectedSize].price
       });
 
       updateBag();
+      openBag();
 
-      addButton.innerHTML =
-        "ADDED ✓";
-
+      addButton.textContent = "ADDED ✓";
       setTimeout(function () {
-        addButton.innerHTML =
-          'ADD TO BAG <span>+</span>';
+        addButton.innerHTML = 'ADD TO BAG <span>+</span>';
       }, 1200);
-
     });
-
   }
 
-  // ==============================
-  // ADD CAP TO BAG
-  // ==============================
-
+  // Add cap
   if (addCapButton) {
-
     addCapButton.addEventListener("click", function () {
-
       cartItems.push({
         type: "cap",
         name: "TOLV CAP",
@@ -279,228 +198,56 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       updateBag();
+      openBag();
 
-      addCapButton.innerHTML =
-        "ADDED ✓";
-
+      addCapButton.textContent = "ADDED ✓";
       setTimeout(function () {
-        addCapButton.innerHTML =
-          'ADD CAP TO BAG <span>+</span>';
+        addCapButton.innerHTML = 'ADD CAP TO BAG <span>+</span>';
       }, 1200);
-
-    });
-
-  }
-
-  // ==============================
-  // GET TOTAL
-  // ==============================
-
-  function getCartTotal() {
-
-    return cartItems.reduce(
-      function (total, item) {
-        return total + item.price;
-      },
-      0
-    );
-  }
-
-  // ==============================
-  // UPDATE BAG
-  // ==============================
-
-  function updateBag() {
-
-    if (bagCount) {
-      bagCount.textContent =
-        cartItems.length;
-    }
-
-    if (!bagItems) {
-      return;
-    }
-
-    bagItems.innerHTML = "";
-
-    if (cartItems.length === 0) {
-
-      bagItems.innerHTML =
-        "<p>YOUR BAG IS WAITING.</p>";
-
-      if (bagTotal) {
-        bagTotal.textContent = "₦0";
-      }
-
-      return;
-    }
-
-    cartItems.forEach(function (item, index) {
-
-      const itemElement =
-        document.createElement("div");
-
-      itemElement.className =
-        "bag-item";
-
-      let details = "";
-
-      if (item.type === "shirt") {
-        details =
-          item.color +
-          " / " +
-          item.size;
-      } else {
-        details =
-          item.color +
-          " / " +
-          item.design;
-      }
-
-      itemElement.innerHTML = `
-        <div>
-          <strong>${item.name}</strong>
-          <p>${details}</p>
-        </div>
-
-        <div>
-          <strong>
-            ${formatNaira(item.price)}
-          </strong>
-
-          <button
-            type="button"
-            class="remove-item"
-            data-index="${index}">
-            ×
-          </button>
-        </div>
-      `;
-
-      bagItems.appendChild(itemElement);
-    });
-
-    if (bagTotal) {
-      bagTotal.textContent =
-        formatNaira(getCartTotal());
-    }
-
-    // Remove buttons
-
-    const removeButtons =
-      document.querySelectorAll(
-        ".remove-item"
-      );
-
-    removeButtons.forEach(function (button) {
-
-      button.addEventListener(
-        "click",
-        function () {
-
-          const index =
-            Number(
-              button.getAttribute(
-                "data-index"
-              )
-            );
-
-          cartItems.splice(index, 1);
-
-          updateBag();
-        }
-      );
-
     });
   }
 
-  // ==============================
-  // CHECKOUT
-  // ==============================
-
+  // Checkout
   if (checkoutButton) {
-
-    checkoutButton.addEventListener(
-      "click",
-      async function (event) {
-
-        event.preventDefault();
-
-        if (cartItems.length === 0) {
-          alert("Your bag is empty.");
-          return;
-        }
-
-        const email =
-          prompt(
-            "Enter your email address for payment:"
-          );
-
-        if (!email) {
-          return;
-        }
-
-        checkoutButton.textContent =
-          "PROCESSING...";
-
-        try {
-
-          const response =
-            await fetch(
-              "/api/pay",
-              {
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-
-                body: JSON.stringify({
-                  email: email,
-                  items: cartItems
-                })
-              }
-            );
-
-          const data =
-            await response.json();
-
-          if (
-            !response.ok ||
-            !data.authorization_url
-          ) {
-            throw new Error(
-              data.error ||
-              "Payment could not be started."
-            );
-          }
-
-          window.location.href =
-            data.authorization_url;
-
-        } catch (error) {
-
-          console.error(error);
-
-          alert(
-            "Payment could not be started. Please try again."
-          );
-
-          checkoutButton.textContent =
-            "CHECKOUT ↗";
-        }
-
+    checkoutButton.addEventListener("click", async function () {
+      if (cartItems.length === 0) {
+        alert("Your bag is empty.");
+        return;
       }
-    );
 
+      const email = prompt("Enter your email address for payment:");
+      if (!email) return;
+
+      checkoutButton.disabled = true;
+      checkoutButton.textContent = "PROCESSING...";
+
+      try {
+        const response = await fetch("/api/pay", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email.trim(),
+            items: cartItems
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.authorization_url) {
+          throw new Error(data.error || "Payment could not be started.");
+        }
+
+        window.location.href = data.authorization_url;
+      } catch (error) {
+        console.error(error);
+        alert(error.message || "Payment could not be started. Please try again.");
+        checkoutButton.disabled = false;
+        checkoutButton.innerHTML = 'CHECKOUT <span>↗</span>';
+      }
+    });
   }
-
-  // ==============================
-  // START WEBSITE
-  // ==============================
 
   updateShirt();
+  updateCap();
   updateBag();
-
 });
