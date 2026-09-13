@@ -207,47 +207,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Checkout
+  // CHECKOUT — open Paystack directly
   if (checkoutButton) {
-    checkoutButton.addEventListener("click", async function () {
-      if (cartItems.length === 0) {
-        alert("Your bag is empty.");
-        return;
-      }
-
-      const email = prompt("Enter your email address for payment:");
-      if (!email) return;
-
-      checkoutButton.disabled = true;
-      checkoutButton.textContent = "PROCESSING...";
-
-      try {
-        const response = await fetch("/api/pay", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email.trim(),
-            items: cartItems
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.authorization_url) {
-          throw new Error(data.error || "Payment could not be started.");
-        }
-
-        window.location.href = data.authorization_url;
-      } catch (error) {
-        console.error(error);
-        alert(error.message || "Payment could not be started. Please try again.");
-        checkoutButton.disabled = false;
-        checkoutButton.innerHTML = 'CHECKOUT <span>↗</span>';
-      }
+    checkoutButton.addEventListener("click", function () {
+      window.location.href = "https://paystack.shop/pay/4xhfrd2266";
     });
   }
-
-  updateShirt();
-  updateCap();
-  updateBag();
-});
