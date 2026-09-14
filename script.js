@@ -1,44 +1,30 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Product elements
   const productImage = document.getElementById("productImage");
   const productPrice = document.getElementById("productPrice");
   const productDescription = document.getElementById("productDescription");
   const colorName = document.getElementById("colorName");
-
   const capPrice = document.getElementById("capPrice");
   const capColorName = document.getElementById("capColorName");
 
   const addButton = document.getElementById("addButton");
   const addCapButton = document.getElementById("addCapButton");
 
-  // Bag elements
   const cartButton = document.getElementById("cartButton");
   const cartCount = document.getElementById("cartCount");
   const cartDrawer = document.getElementById("cartDrawer");
   const closeCart = document.getElementById("closeCart");
   const cartEmpty = document.getElementById("cartEmpty");
-  const cartItem = document.getElementById("cartItem");
-  const cartDetail = document.getElementById("cartDetail");
+  const cartItemsList = document.getElementById("cartItemsList");
+  const cartTotal = document.getElementById("cartTotal");
+  const checkoutForm = document.getElementById("checkoutForm");
   const checkoutButton = document.getElementById("checkoutButton");
+  const checkoutError = document.getElementById("checkoutError");
   const scrim = document.getElementById("scrim");
 
-  // Shirt sizes, prices and images
   const shirtData = {
-    S: {
-      price: 20000,
-      image: "tolv small.png",
-      description: "The original TOLV graphic tee in Small."
-    },
-    M: {
-      price: 22000,
-      image: "tolv medium.png",
-      description: "The original TOLV graphic tee in Medium."
-    },
-    L: {
-      price: 23000,
-      image: "tolv big.png",
-      description: "The original TOLV graphic tee in Large."
-    }
+    S: { price: 20000, image: "tolv small.png", description: "The original TOLV graphic tee in Small." },
+    M: { price: 22000, image: "tolv medium.png", description: "The original TOLV graphic tee in Medium." },
+    L: { price: 23000, image: "tolv big.png", description: "The original TOLV graphic tee in Large." }
   };
 
   const capData = {
@@ -47,34 +33,26 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   let selectedSize = "S";
-  let selectedColor = "BLACK";
+  let selectedColor = "black";
   let selectedCapDesign = "Printed";
-  let selectedCapColor = "BLACK";
-  let cartItems = [];
+  let selectedCapColor = "black";
+  const cartItems = [];
 
   function formatNaira(amount) {
     return "₦" + Number(amount).toLocaleString("en-NG");
   }
 
-  // Update shirt image, price and description
   function updateShirt() {
     const product = shirtData[selectedSize];
-
-    if (productImage) productImage.src = product.image;
-    if (productPrice) productPrice.textContent = formatNaira(product.price);
-    if (productDescription) productDescription.textContent = product.description;
-    if (colorName) colorName.textContent = selectedColor;
+    productImage.src = product.image;
+    productPrice.textContent = formatNaira(product.price);
+    productDescription.textContent = product.description;
+    colorName.textContent = selectedColor.toUpperCase();
   }
 
-  // Update cap price and selected color
   function updateCap() {
-    if (capPrice) {
-      capPrice.textContent = formatNaira(capData[selectedCapDesign]);
-    }
-
-    if (capColorName) {
-      capColorName.textContent = selectedCapColor;
-    }
+    capPrice.textContent = formatNaira(capData[selectedCapDesign]);
+    capColorName.textContent = selectedCapColor.toUpperCase();
   }
 
   function setActive(buttons, selectedButton) {
@@ -83,11 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Shirt size buttons
-  const sizeButtons = document.querySelectorAll(
-    ".sizes .size:not(.cap-design)"
-  );
-
+  const sizeButtons = document.querySelectorAll(".sizes .size:not(.cap-design)");
   sizeButtons.forEach(function (button) {
     button.addEventListener("click", function () {
       selectedSize = button.dataset.size;
@@ -96,22 +70,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Shirt color buttons
-  const shirtColorButtons = document.querySelectorAll(
-    ".swatch:not(.cap-color)"
-  );
-
+  const shirtColorButtons = document.querySelectorAll(".swatch:not(.cap-color)");
   shirtColorButtons.forEach(function (button) {
     button.addEventListener("click", function () {
-      selectedColor = (button.dataset.color || "black").toUpperCase();
+      selectedColor = button.dataset.color || "black";
       setActive(shirtColorButtons, button);
       updateShirt();
     });
   });
 
-  // Cap design buttons
   const capDesignButtons = document.querySelectorAll(".cap-design");
-
   capDesignButtons.forEach(function (button) {
     button.addEventListener("click", function () {
       selectedCapDesign = button.dataset.design;
@@ -120,138 +88,163 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Cap color buttons
   const capColorButtons = document.querySelectorAll(".cap-color");
-
   capColorButtons.forEach(function (button) {
     button.addEventListener("click", function () {
-      selectedCapColor = (button.dataset.color || "black").toUpperCase();
+      selectedCapColor = button.dataset.color || "black";
       setActive(capColorButtons, button);
       updateCap();
     });
   });
 
-  // Open and close bag
   function openBag() {
-    if (cartDrawer) {
-      cartDrawer.classList.add("open");
-      cartDrawer.setAttribute("aria-hidden", "false");
-    }
-
-    if (scrim) scrim.classList.add("active");
+    cartDrawer.classList.add("open");
+    cartDrawer.setAttribute("aria-hidden", "false");
+    scrim.classList.add("show");
   }
 
   function closeBag() {
-    if (cartDrawer) {
-      cartDrawer.classList.remove("open");
-      cartDrawer.setAttribute("aria-hidden", "true");
-    }
-
-    if (scrim) scrim.classList.remove("active");
+    cartDrawer.classList.remove("open");
+    cartDrawer.setAttribute("aria-hidden", "true");
+    scrim.classList.remove("show");
   }
 
-  if (cartButton) cartButton.addEventListener("click", openBag);
-  if (closeCart) closeCart.addEventListener("click", closeBag);
-  if (scrim) scrim.addEventListener("click", closeBag);
+  cartButton.addEventListener("click", openBag);
+  closeCart.addEventListener("click", closeBag);
+  scrim.addEventListener("click", closeBag);
 
-  // Calculate total in the bag
   function getCartTotal() {
     return cartItems.reduce(function (total, item) {
-      return total + item.price;
+      return total + item.price * item.quantity;
     }, 0);
   }
 
-  // Update bag count, items and total
-  function updateBag() {
-    if (cartCount) {
-      cartCount.textContent = cartItems.length;
+  function renderBag() {
+    cartCount.textContent = cartItems.reduce(function (count, item) {
+      return count + item.quantity;
+    }, 0);
+
+    cartEmpty.hidden = cartItems.length > 0;
+    cartItemsList.innerHTML = "";
+
+    cartItems.forEach(function (item, index) {
+      const row = document.createElement("div");
+      row.className = "cart-item";
+
+      const details = document.createElement("div");
+      const name = document.createElement("b");
+      name.textContent = item.name;
+
+      const description = document.createElement("p");
+      const option = item.type === "shirt" ? item.size : item.design;
+      description.textContent =
+        item.color.toUpperCase() + " / " + option + " / QTY " + item.quantity;
+
+      details.append(name, description);
+
+      const price = document.createElement("strong");
+      price.textContent = formatNaira(item.price * item.quantity);
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className = "remove-item";
+      removeButton.textContent = "Remove";
+      removeButton.addEventListener("click", function () {
+        cartItems.splice(index, 1);
+        renderBag();
+      });
+
+      row.append(details, price, removeButton);
+      cartItemsList.appendChild(row);
+    });
+
+    cartTotal.textContent = "Total: " + formatNaira(getCartTotal());
+    checkoutButton.disabled = cartItems.length === 0;
+  }
+
+  addButton.addEventListener("click", function () {
+    cartItems.push({
+      type: "shirt",
+      name: "TOLV GRAPHIC TEE",
+      size: selectedSize,
+      color: selectedColor,
+      quantity: 1,
+      price: shirtData[selectedSize].price
+    });
+
+    renderBag();
+    openBag();
+    addButton.innerHTML = "ADDED ✓";
+
+    setTimeout(function () {
+      addButton.innerHTML = 'ADD TO BAG <span>+</span>';
+    }, 1200);
+  });
+
+  addCapButton.addEventListener("click", function () {
+    cartItems.push({
+      type: "cap",
+      name: "TOLV CAP",
+      design: selectedCapDesign,
+      color: selectedCapColor,
+      quantity: 1,
+      price: capData[selectedCapDesign]
+    });
+
+    renderBag();
+    openBag();
+    addCapButton.innerHTML = "ADDED ✓";
+
+    setTimeout(function () {
+      addCapButton.innerHTML = 'ADD CAP TO BAG <span>+</span>';
+    }, 1200);
+  });
+
+  checkoutForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    checkoutError.textContent = "";
+
+    if (cartItems.length === 0) {
+      checkoutError.textContent = "Your bag is empty.";
+      return;
     }
 
-    if (cartEmpty) {
-      cartEmpty.hidden = cartItems.length > 0;
-    }
+    checkoutButton.disabled = true;
+    checkoutButton.textContent = "PLEASE WAIT…";
 
-    if (cartItem) {
-      cartItem.hidden = cartItems.length === 0;
-    }
+    const order = {
+      customerName: document.getElementById("customerName").value.trim(),
+      email: document.getElementById("customerEmail").value.trim(),
+      phone: document.getElementById("customerPhone").value.trim(),
+      deliveryAddress: document.getElementById("deliveryAddress").value.trim(),
+      items: cartItems.map(function (item) {
+        return { ...item };
+      })
+    };
 
-    if (cartDetail) {
-      cartDetail.textContent = cartItems.map(function (item) {
-        const details = item.type === "shirt"
-          ? item.color + " / " + item.size
-          : item.color + " / " + item.design;
+    try {
+      const response = await fetch("/api/pay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order)
+      });
 
-        return item.name + " — " + details +
-          " (" + formatNaira(item.price) + ")";
-      }).join(" | ");
-    }
+      const result = await response.json();
 
-    if (cartItem) {
-      const priceElement = cartItem.querySelector("strong");
-
-      if (priceElement) {
-        priceElement.textContent = formatNaira(getCartTotal());
+      if (!response.ok || !result.authorization_url) {
+        throw new Error(result.error || "Checkout could not be started.");
       }
+
+      window.location.href = result.authorization_url;
+    } catch (error) {
+      checkoutError.textContent =
+        error.message || "Something went wrong. Please try again.";
+      checkoutButton.disabled = false;
+      checkoutButton.innerHTML = 'CHECKOUT <span>↗</span>';
     }
+  });
 
-    if (checkoutButton) {
-      checkoutButton.disabled = cartItems.length === 0;
-    }
-  }
-
-  // Add shirt to bag
-  if (addButton) {
-    addButton.addEventListener("click", function () {
-      cartItems.push({
-        type: "shirt",
-        name: "TOLV GRAPHIC TEE",
-        size: selectedSize,
-        color: selectedColor,
-        price: shirtData[selectedSize].price
-      });
-
-      updateBag();
-      openBag();
-
-      addButton.textContent = "ADDED ✓";
-
-      setTimeout(function () {
-        addButton.innerHTML = 'ADD TO BAG <span>+</span>';
-      }, 1200);
-    });
-  }
-
-  // Add cap to bag
-  if (addCapButton) {
-    addCapButton.addEventListener("click", function () {
-      cartItems.push({
-        type: "cap",
-        name: "TOLV CAP",
-        design: selectedCapDesign,
-        color: selectedCapColor,
-        price: capData[selectedCapDesign]
-      });
-
-      updateBag();
-      openBag();
-
-      addCapButton.textContent = "ADDED ✓";
-
-      setTimeout(function () {
-        addCapButton.innerHTML = 'ADD CAP TO BAG <span>+</span>';
-      }, 1200);
-    });
-  }
-
-  // CHECKOUT: open your Paystack payment page directly
-  if (checkoutButton) {
-    checkoutButton.addEventListener("click", function () {
-      window.location.href = "https://paystack.shop/pay/4xhfrd2266";
-    });
-  }
-
-  // Set the initial display
   updateShirt();
   updateCap();
-  updateBag();
+  renderBag();
 });
