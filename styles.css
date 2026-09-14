@@ -72,13 +72,14 @@ textarea:focus-visible {
   color: var(--gold);
 }
 
+/* Header and larger logo */
 .site-header {
-  min-height: 86px;
+  min-height: 118px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 24px;
-  padding: 12px 5vw;
+  padding: 16px 5vw;
   border-bottom: 1px solid var(--line);
 }
 
@@ -90,8 +91,8 @@ textarea:focus-visible {
 }
 
 .brand img {
-  width: 112px;
-  height: 58px;
+  width: 160px;
+  height: 84px;
   object-fit: contain;
   object-position: left center;
 }
@@ -526,8 +527,8 @@ footer {
 }
 
 .footer-brand img {
-  width: 130px;
-  height: 70px;
+  width: 160px;
+  height: 84px;
   object-fit: contain;
   object-position: left center;
 }
@@ -710,15 +711,15 @@ footer > a:last-child {
 
 @media (max-width: 760px) {
   .site-header {
-    min-height: 76px;
+    min-height: 100px;
     grid-template-columns: 1fr auto;
     gap: 12px;
     padding: 10px 5vw;
   }
 
   .brand img {
-    width: 92px;
-    height: 48px;
+    width: 130px;
+    height: 68px;
   }
 
   .site-header nav {
@@ -835,6 +836,11 @@ footer > a:last-child {
   .site-header nav {
     gap: 13px;
     font-size: 9px;
+  }
+
+  .brand img {
+    width: 116px;
+    height: 60px;
   }
 
   .hero-copy {
