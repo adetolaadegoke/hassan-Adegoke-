@@ -200,17 +200,55 @@
         <label for="customerPhone">Phone number</label>
         <input id="customerPhone" name="phone" type="tel" autocomplete="tel" required />
 
-        <label for="deliveryAddress">Delivery address</label>
-        <textarea id="deliveryAddress" name="deliveryAddress" autocomplete="street-address" rows="3" required></textarea>
+        <label for="fulfillmentType">How would you like to receive your order?</label>
+        <select id="fulfillmentType" name="fulfillmentType" required>
+          <option value="">Choose one</option>
+          <option value="Collection">Collection</option>
+          <option value="Delivery">Delivery</option>
+        </select>
+
+        <div id="addressGroup" hidden>
+          <label for="deliveryAddress">Delivery address</label>
+          <textarea id="deliveryAddress" name="deliveryAddress" autocomplete="street-address" rows="3"></textarea>
+        </div>
 
         <p id="checkoutError" class="checkout-error" role="alert"></p>
+
         <button class="checkout-button" id="checkoutButton" type="submit" disabled>
           CHECKOUT <span>↗</span>
         </button>
+
+        <div id="paymentResult" hidden aria-live="polite">
+          <h3 id="paymentResultTitle"></h3>
+          <p id="paymentResultMessage"></p>
+          <div id="orderQrCode"></div>
+          <p id="orderQrToken"></p>
+        </div>
       </form>
     </aside>
 
     <div class="scrim" id="scrim"></div>
+
+    <script>
+      const fulfillmentType = document.getElementById("fulfillmentType");
+      const addressGroup = document.getElementById("addressGroup");
+      const deliveryAddress = document.getElementById("deliveryAddress");
+
+      function updateFulfillmentFields() {
+        const isDelivery = fulfillmentType.value === "Delivery";
+
+        addressGroup.hidden = !isDelivery;
+        deliveryAddress.required = isDelivery;
+
+        if (!isDelivery) {
+          deliveryAddress.value = "";
+        }
+      }
+
+      fulfillmentType.addEventListener("change", updateFulfillmentFields);
+      updateFulfillmentFields();
+    </script>
+
     <script src="script.js"></script>
   </body>
 </html>
