@@ -9,19 +9,37 @@ export default async function handler(req, res) {
       email,
       phone,
       deliveryAddress,
+      fulfillmentType = "Delivery",
       items
     } = req.body || {};
 
-    if (
-      !customerName?.trim() ||
-      !email?.trim() ||
-      !phone?.trim() ||
-      !deliveryAddress?.trim() ||
-      !Array.isArray(items) ||
-      items.length === 0
-    ) {
+    const name = typeof customerName === "string" ? customerName.trim() : "";
+    const customerEmail = typeof email === "string" ? email.trim() : "";
+    const customerPhone = typeof phone === "string" ? phone.trim() : "";
+    const address =
+      typeof deliveryAddress === "string" ? deliveryAddress.trim() : "";
+
+    if (!name || !customerEmail || !customerPhone) {
       return res.status(400).json({
-        error: "Please provide your name, email, phone, address, and cart items."
+        error: "Please provide your name, email, and phone number."
+      });
+    }
+
+    if (!["Collection", "Delivery"].includes(fulfillmentType)) {
+      return res.status(400).json({
+        error: "Please choose Collection or Delivery."
+      });
+    }
+
+    if (fulfillmentType === "Delivery" && !address) {
+      return res.status(400).json({
+        error: "Please provide your delivery address."
+      });
+    }
+
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({
+        error: "Your cart is empty. Please add an item before checkout."
       });
     }
 
@@ -40,8 +58,8 @@ export default async function handler(req, res) {
     const verifiedItems = items.map((item) => {
       const quantity = Number(item.quantity ?? 1);
 
-      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 50) {
-        throw new Error("Invalid item quantity.");
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 200) {
+        throw new Error("Each item quantity must be between 1 and 200.");
       }
 
       let price;
@@ -79,17 +97,20 @@ export default async function handler(req, res) {
 
     const orderId = "TOLV-" + Date.now();
 
-    // Record the order as Pending before sending the customer to Paystack.
+    // Save the order before sending the customer to Paystack.
     const sheetResponse = await fetch(sheetUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         secret: orderSecret,
         orderId,
-        customerName: customerName.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        deliveryAddress: deliveryAddress.trim(),
+        customerName: name,
+        email: customerEmail,
+        phone: customerPhone,
+        deliveryAddress: fulfillmentType === "Delivery" ? address : "",
+        fulfillmentType,
         items: verifiedItems
       })
     });
@@ -98,6 +119,7 @@ export default async function handler(req, res) {
 
     if (!sheetResponse.ok || !sheetResult.success) {
       console.error("Google Sheets order save failed:", sheetResult);
+
       return res.status(502).json({
         error: "We couldn't save your order. Please try again."
       });
@@ -112,13 +134,14 @@ export default async function handler(req, res) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          email: email.trim(),
+          email: customerEmail,
           amount: String(total * 100),
           currency: "NGN",
           reference: orderId,
           metadata: {
             store: "TOLV WEAR",
             orderId,
+            fulfillmentType,
             items: verifiedItems
           }
         })
@@ -129,8 +152,10 @@ export default async function handler(req, res) {
 
     if (!paystackResponse.ok || !paystackResult.status) {
       console.error("Paystack initialization failed:", paystackResult);
+
       return res.status(502).json({
-        error: "Your order was recorded, but payment could not be started. Please contact TOLV before trying again."
+        error:
+          "Your order was recorded, but payment could not be started. Please contact TOLV before trying again."
       });
     }
 
@@ -140,6 +165,7 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error(error);
+
     return res.status(400).json({
       error: error.message || "Unable to process checkout."
     });
