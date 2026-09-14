@@ -9,13 +9,16 @@ export default async function handler(req, res) {
       email,
       phone,
       deliveryAddress,
-      fulfillmentType = "Delivery",
+      fulfillmentType,
       items
     } = req.body || {};
 
-    const name = typeof customerName === "string" ? customerName.trim() : "";
-    const customerEmail = typeof email === "string" ? email.trim() : "";
-    const customerPhone = typeof phone === "string" ? phone.trim() : "";
+    const name =
+      typeof customerName === "string" ? customerName.trim() : "";
+    const customerEmail =
+      typeof email === "string" ? email.trim() : "";
+    const customerPhone =
+      typeof phone === "string" ? phone.trim() : "";
     const address =
       typeof deliveryAddress === "string" ? deliveryAddress.trim() : "";
 
@@ -104,6 +107,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
+        action: "save_order",
         secret: orderSecret,
         orderId,
         customerName: name,
